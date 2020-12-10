@@ -1,41 +1,81 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:typed_data';
+
+import 'package:fft/fft.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
 import 'package:sound_stream/sound_stream.dart';
-import 'start_page.dart';
+import 'package:dart_numerics/dart_numerics.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.landscapeRight]).then(
-    (_) {
-      runApp(MyApp());
-    },
-  );
-}
+class AnalysisModel extends ChangeNotifier {
+  final RecorderStream _recorder = RecorderStream();
+  final PlayerStream _player = PlayerStream();
 
-class MyApp extends StatelessWidget {
+  List<int> samples;
+  List<double> power;
+  bool isRecording = false;
+
+  StreamSubscription _recorderStatus;
+  StreamSubscription _playerStatus;
+  StreamSubscription _audioStream;
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Voice',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-        accentColor: Colors.redAccent,
-        scaffoldBackgroundColor: Colors.amberAccent,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        buttonTheme: const ButtonThemeData(
-          textTheme: ButtonTextTheme.accent,
-          shape: RoundedRectangleBorder(
-            // Dialog以外のボタンの角に影響を与えることができる
-            borderRadius: BorderRadius.all(Radius.circular(12)),
-          ),
-        ),
-      ),
-      home: StartPage(),
+  void dispose() {
+    _recorderStatus?.cancel();
+    _playerStatus?.cancel();
+    _audioStream?.cancel();
+    super.dispose();
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initPlugin() async {
+    _recorderStatus = _recorder.status.listen(
+      (status) {
+        isRecording = status == SoundStreamStatus.Playing;
+      },
     );
+
+    /// ここでデータを取ってきている。
+    _audioStream = _recorder.audioStream.listen(
+      (data) {
+        // この変換方法で正しいのか調査が必要
+        samples = List.filled(pow(2, 13).toInt(), 0);
+        power = List.filled(pow(2, 13).toInt(), 0);
+
+        // TODO: 波形データが取れない！
+        for (var i = 0; i < Uint16List.view(data.buffer).length; i++) {
+          samples[i] = Uint16List.view(data.buffer)[i];
+        }
+        print(samples);
+        final window = Window(WindowType.HANN);
+        final windowed = window.apply(samples);
+        final fft = FFT().Transform(windowed);
+        for (var i = 0; i < pow(2, 13).toInt(); i++) {
+          final tmpPower = (fft[i] * fft[i].conjugate).real;
+          // power[i] = -(10 * log10(tmpPower));
+          power[i] = -tmpPower.toDouble();
+        }
+        notifyListeners();
+      },
+    );
+
+    /// 初期化
+    await Future.wait<void>(
+      [
+        _recorder.initialize(),
+        _player.initialize(),
+      ],
+    );
+  }
+
+  Future<void> startRecorder() async {
+    await _recorder.start();
+    notifyListeners();
+  }
+
+  Future<void> stopRecorder() async {
+    await _recorder.stop();
+    notifyListeners();
   }
 }
 
