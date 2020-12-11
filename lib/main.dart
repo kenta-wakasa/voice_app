@@ -22,14 +22,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Voice',
       theme: ThemeData(
-        primarySwatch: Colors.red,
+        primarySwatch: Colors.blue,
         accentColor: Colors.redAccent,
-        scaffoldBackgroundColor: Colors.amberAccent,
+        scaffoldBackgroundColor: Colors.black87,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         buttonTheme: const ButtonThemeData(
           textTheme: ButtonTextTheme.accent,
           shape: RoundedRectangleBorder(
-            // Dialog以外のボタンの角に影響を与えることができる
             borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
         ),

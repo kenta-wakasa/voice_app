@@ -3,22 +3,23 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class WavePainter extends CustomPainter {
-  final _hightOffset = 0.5;
-  List<int> samples;
+  final _hightOffset = 0.25;
+  BoxConstraints constraints;
+  List<double> samples;
   List<Offset> points;
   Color color;
-  BuildContext context;
+
   Size size;
 
   // Set max val possible in stream, depending on the config
-  final int absMax = 500000;
+  final absMax = 30;
 
-  WavePainter(this.samples, this.color, this.context);
+  WavePainter(this.samples, this.color, this.constraints);
 
   @override
   void paint(Canvas canvas, Size size) {
-    this.size = context.size;
-    size = this.size;
+    // this.size = context.size;
+    // size = this.size;
 
     Paint paint = Paint()
       ..color = color
@@ -37,25 +38,20 @@ class WavePainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldPainting) => true;
 
   // Maps a list of ints and their indices to a list of points on a cartesian grid
-  List<Offset> toPoints(List<int> samples) {
+  List<Offset> toPoints(List<double> samples) {
     final points = <Offset>[];
-    var samplesToDouble = <double>[];
-    if (samples == null) {
-      samplesToDouble =
-          List<double>.filled(pow(2, 13).toInt(), _hightOffset * size.height);
-    }
-    for (var i = 0; i < size.width; i++) {
+    for (var i = 0; i < (samples.length / 2); i++) {
       points.add(
         Offset(
-          i * 1.0,
-          project(samples[i], absMax, size.height),
+          i / (samples.length / 2) * constraints.maxWidth,
+          project(samples[i], absMax, constraints.maxHeight),
         ),
       );
     }
     return points;
   }
 
-  double project(int val, int max, double height) {
+  double project(double val, int max, double height) {
     final waveHeight = (val / max) * _hightOffset * height;
     return waveHeight + _hightOffset * height;
   }

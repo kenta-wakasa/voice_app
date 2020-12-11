@@ -21,6 +21,7 @@ class StartPage extends StatelessWidget {
                     child: Text('VOICE',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         )),
                   ),
                 ),
@@ -29,7 +30,7 @@ class StartPage extends StatelessWidget {
                 width: _size.width,
                 child: RaisedButton(
                   child: const Text(
-                    '音声波形を見る',
+                    'スペクトルをみる',
                     style: TextStyle(
                         color: Colors.white, fontWeight: FontWeight.bold),
                   ),
