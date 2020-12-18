@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'wave_painter.dart';
 
 import 'analysis_model.dart';
+import 'wave_painter.dart';
 
 class AnalyisPage extends StatelessWidget {
   @override
@@ -36,7 +36,7 @@ class AnalyisPage extends StatelessWidget {
                 LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     return Stack(
-                      children: axis(constraints),
+                      children: label(constraints),
                     );
                   },
                 ),
@@ -48,7 +48,7 @@ class AnalyisPage extends StatelessWidget {
     );
   }
 
-  List<Widget> axis(BoxConstraints constraints) {
+  List<Widget> label(BoxConstraints constraints) {
     final list = <Widget>[];
     const maxFrequency = 44100 / 4;
     for (var i = 0; i < (maxFrequency / 1000); i++) {
