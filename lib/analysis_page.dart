@@ -13,6 +13,8 @@ class AnalyisPage extends StatelessWidget {
         return Scaffold(
           floatingActionButton: Container(
             margin: const EdgeInsets.only(bottom: 20),
+
+            /// マイクの on / off 切り替え
             child: FloatingActionButton(
               backgroundColor: model.isRecording ? Colors.red : Colors.green,
               onPressed: model.isRecording ? model.stop : model.start,
@@ -24,15 +26,17 @@ class AnalyisPage extends StatelessWidget {
           body: SafeArea(
             child: Stack(
               children: [
+                /// パワースペクトルの描画
                 LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
-                    // constraints variable has the size info
                     return CustomPaint(
                       painter:
                           WavePainter(model.spectrum, Colors.blue, constraints),
                     );
                   },
                 ),
+
+                /// ラベルの描画
                 LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     return Stack(
