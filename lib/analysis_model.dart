@@ -30,7 +30,7 @@ class AnalysisModel extends ChangeNotifier {
       // パワースペクトルを dB 単位に変換
       // 参考 : https://marui.hatenablog.com/entry/2019/12/20/071400
       final tmpPower = (fft[i] * fft[i].conjugate).real / _windowLength;
-      spectrum[i] = -(10 * log10(tmpPower)); // canvas がした方向に正のため反転している
+      spectrum[i] = -(10 * log10(tmpPower)); // canvas が下方向に正のため反転している
     }
     notifyListeners();
   }

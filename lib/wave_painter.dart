@@ -1,8 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 class WavePainter extends CustomPainter {
+  WavePainter(this.samples, this.color, this.constraints);
+
   final _hightOffset = 0.25;
   BoxConstraints constraints;
   List<double> samples;
@@ -14,30 +14,27 @@ class WavePainter extends CustomPainter {
   // Set max val possible in stream, depending on the config
   final absMax = 30;
 
-  WavePainter(this.samples, this.color, this.constraints);
-
   @override
   void paint(Canvas canvas, Size size) {
-    // this.size = context.size;
-    // size = this.size;
-
-    Paint paint = Paint()
+    // 色、太さ、塗り潰しの有無などを指定
+    final paint = Paint()
       ..color = color
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke;
 
+    // 得られたデータをオフセットのリストに変換する
+    // やっていることは決められた範囲で等間隔に点を並べているだけ
     points = toPoints(samples);
 
-    Path path = Path();
-    path.addPolygon(points, false);
-
+    // addPolygon で path をつくり deawPath でグラフを表現する
+    final path = Path()..addPolygon(points, false);
     canvas.drawPath(path, paint);
   }
 
   @override
   bool shouldRepaint(CustomPainter oldPainting) => true;
 
-  // Maps a list of ints and their indices to a list of points on a cartesian grid
+  // 得られたデータを等間隔に並べていく
   List<Offset> toPoints(List<double> samples) {
     final points = <Offset>[];
     for (var i = 0; i < (samples.length / 2); i++) {
