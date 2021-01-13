@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Hello, Script!"
+
 # アップデートなどをかけるために path 情報を生成する
 root=$(pwd) 
 flutter_dir=$root/flutter
@@ -7,7 +9,7 @@ flutter_bin_dir=$flutter_dir/bin
 flutter=$flutter_bin_dir/flutter
 
 # flutter を clone してくる
-sudo git clone https://github.com/flutter/flutter.git
+git clone https://github.com/flutter/flutter.git
 
 # upgrade をかける
 $flutter upgrade
