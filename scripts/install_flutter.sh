@@ -7,7 +7,7 @@ flutter_bin_dir=$flutter_dir/bin
 flutter=$flutter_bin_dir/flutter
 
 # flutter を clone してくる
-git clone https://github.com/flutter/flutter.git
+sudo git clone https://github.com/flutter/flutter.git
 
 # upgrade をかける
 $flutter upgrade
