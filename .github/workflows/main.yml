@@ -27,8 +27,12 @@ jobs:
     steps: #一連のタスク
       - name: Checks-out my repository 
         uses: actions/checkout@v2
-      - name: print ls
-        run: ls
+      - name: Install Flutter
+        run: ./scripts/install_flutter.sh
+      - name: print FLUTTER_FULL_VERSION
+        run: |
+          echo $FLUTTER_FULL_VERSION
+          echo ${{ env.FLUTTER_FULL_VERSION }}
   
   # # This workflow contains a single job called "build"
   # build:
