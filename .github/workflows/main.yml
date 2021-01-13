@@ -28,7 +28,7 @@ jobs:
       - name: Checks-out my repository 
         uses: actions/checkout@v2
       - name: print ls
-        run: echo | ls
+        run: ls
   
   # # This workflow contains a single job called "build"
   # build:
